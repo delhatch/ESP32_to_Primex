@@ -24,7 +24,7 @@ Note that the image below is "upside down" from how you will see it.
    like the figure below.
 Note that the DB9 connector has male pins.
 
-/-----------------\\<cr>
+/-----------------\\<br>
 |  1  2  3  4  5  |
 |   6  7  8  9    |
   \\------------/
