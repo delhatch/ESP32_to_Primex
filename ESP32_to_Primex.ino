@@ -1,4 +1,5 @@
 ﻿// Emulates a Garmin 18x-LVC GPS unit, for operation with the Primex FM-72 transmitter.
+// Just sends GPRMC sentences. Ignores the strings sent from the FM-72. No Garmin start-up handshake.
 
 #include "Arduino.h"
 #include <Esp.h>
@@ -9,21 +10,15 @@
 #define TXp2 17
 
 // The following string is the prototype for simulating the NMEA GPS sentence.
-char gpsstring[100] = "$GPRMC,HHMMSS,A,4730.0000,N,12230.0000,W,000.0,306.8,DDMMYY,016.3,E,A*66\0\0\0\0\0\0\0";
+char gpsstring[100] = "$GPRMC,HHMMSS,A,4735.5778,N,12233.7693,W,000.0,306.8,DDMMYY,016.3,E,A*66\0\0\0\0\0\0\0";
 int DDMMYYat = 53;
 // The following string is
-String startup = "$GPRMC,021307,V,4730.0000,N,12230.0000,W,,,060522,016.3,E,N*16";
+String startup = "$GPRMC,021307,V,4735.5873,N,12233.7814,W,,,060522,016.3,E,N*16";
 char str[100];
 uint8_t chk;
 int i;
 char timestrc[10];
 int wherestar;
-String Sin;
-String Sout1 = "$PGRMO,,2";
-String Sout2 = "$PGRMO,GPRMC,1";
-String Sout3 = "$PGRMC1,,,,,,,,N";
-String Sout4 = "$PGRMC,,,,,,,,,,,,2";
-String Sout5 = "$PGRMI,,,,,,,R";
 
 static long int nowTime = 0;     // The current program time, in millis().
 static long int lastRanTime = 0; // The last time (in millis() ) that the GPS data was generated. 1 per second.
@@ -31,8 +26,8 @@ int state = 0;
 int alreadyUpdated = 0;
 
 // WiFi & NTP constants
-const char* ssid = " ";   // Your WiFi SSID here.
-const char* pass = " ";   // Your WiFi password here.
+const char* ssid = "America";
+const char* pass = "squeakziggy";
 int trycount;
 const char* ntpServer = "pool.ntp.org";
 struct tm ntp_time;   // Holds the time as retreived from the NTP server.
@@ -93,15 +88,7 @@ void setup() {
   Serial.println( thisTime );
   setTime( thisTime );               // Sets the ESP32 RTC clock from the UTC time
 
-  // If a cold boot, set state to beginning. If warm boot, set state to "start sending GPS sentences".
-  if ( cold_boot != 3.14159265 ) {
-    Serial.println("---- COLD BOOT ----");
-    state = 0;
-    cold_boot = 3.14159265;  // If the WiFi later fails to connect and then reboots, this value will persist over the reboot.
-  }
-  else {
-    state = 4;
-  }
+  state = 0;
 
   lastRanTime = millis() - 1000;  // Ensures the first GPS message will be sent immediately.
 
@@ -111,28 +98,11 @@ void loop() {
   nowTime = millis();
 
   switch ( state ) {
-    case 0 : delay(100);
+    case 0 : delay(9000);
       state = 1;
       break;
 
-    case 1 : Sin = Serial2.readStringUntil('\n');
-      Serial.print("Got: ");
-      Serial.println( Sin );
-      delay(3300);
-      state = 3;
-      break;
-
-    case 3 : Serial2.println( startup );
-      Serial2.println( Sout1 );
-      Serial2.println( Sout2 );
-      Serial2.println( Sout3 );
-      Serial2.println( Sout4 );
-      Serial2.println( Sout5 );
-      delay(5100);
-      state = 4;
-      break;
-
-    case 4 :
+    case 1 :
       // Is it time to send the GPS sentence to the FM-72? (Do it every 1 second.)
       if ( nowTime > (lastRanTime + 1000) ) {
         lastRanTime = nowTime;
@@ -272,32 +242,3 @@ void UpdateClock( void ) {
 
   return;
 }
-
-/*
-  // checking for WIFI connection
-  if ((WiFi.status() != WL_CONNECTED) && (current_time – previous_time >=delay)) {
-    Serial.print(millis());
-    Serial.println("Reconnecting to WIFI network");
-    WiFi.disconnect();
-    WiFi.reconnect();
-    previous_time = current_time;
-  }
-*/
-
-//if ( (nowTime > (lastRanTime + UPDATE_DELAY))  ) {
-//    lastRanTime = nowTime;
-
-/*
-  // Calculate the time from the UTC seconds.
-    useTime = now();    // Get UTC time from the ESP32.
-    //useTime -= 8 * 3600; // For Seattle time zone, subtract 8 hours.
-    breakTime( useTime, TimeLib_time );   // Convert UTC seconds into hour,min,sec, etc...
-    //breakTime( useTime, TimeLib_time );
-    rtc_hour       = (uint8_t)LoRatm.Hour;
-    rtc_minute     = (uint8_t)LoRatm.Minute;
-    rtc_sec        = (uint8_t)LoRatm.Second;
-    rtc_dayofweek  = (uint8_t)LoRatm.Wday;
-    rtc_dayofmonth = (uint8_t)LoRatm.Day;
-    rtc_month      = (uint8_t)LoRatm.Month;
-    rtc_year       = (uint8_t)LoRatm.Year - 30;   // breakTime returns "Years since 1970"
-*/
