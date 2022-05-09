@@ -11,14 +11,14 @@ WIRING INSTRUCTIONS:
 
 ESP32 TX2 pin: This signal needs logic invertion. You can use a MAX232 chip, or simply invert it using a 74LS14 IC chip. (Run the 74LS14 from +5 volts.) Wire the inverted signal (output of the 74LS14 or output of the MAX232 chip) to pin 3 of the FM-72 "GPS socket" DB-9 connector (RXD).
 
-ESP32 GND pin: Wire this to pin 5 of the FM-72 "GPS socket" DB-9 connector (GND).
+ESP32 GND pin: Wire this to pin 5 of the FM72 "GPS socket" DB-9 connector (GND).
 
-ESP32 VIN pin: Wire this to pin 9 of the FM-72 "GPS socket" DB-9 connector (+5VDC).
+ESP32 VIN pin: Wire this to pin 9 of the FM72 "GPS socket" DB-9 connector (+5VDC).
 
 GPS SOCKET FIGURE:
-As you look at the FM-72 connector, the pinout is as follows.
+As you look at the FM72 connector, the pinout is as follows.
 Note that the image below is "upside down" from how you will see it.
-   In other words, if you hold the FM-72 unit upside down, it will look
+   In other words, if you hold the FM72 unit upside down, it will look
    like the figure below.
 Note that the DB9 connector has male pins.
 
