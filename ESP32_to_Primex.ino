@@ -10,7 +10,7 @@
 #define TXp2 17
 
 // The following string is the prototype for simulating the NMEA GPS sentence.
-char gpsstring[100] = "$GPRMC,HHMMSS,A,4735.5778,N,12233.7693,W,000.0,306.8,DDMMYY,016.3,E,A*66\0\0\0\0\0\0\0";
+char gpsstring[100] = "$GPRMC,HHMMSS,A,4730.0000,N,12230.0000,W,000.0,306.8,DDMMYY,016.3,E,A*66\0\0\0\0\0\0\0";
 int DDMMYYat = 53;
 // The following string is
 String startup = "$GPRMC,021307,V,4735.5873,N,12233.7814,W,,,060522,016.3,E,N*16";
@@ -26,8 +26,8 @@ int state = 0;
 int alreadyUpdated = 0;
 
 // WiFi & NTP constants
-const char* ssid = "America";
-const char* pass = "squeakziggy";
+const char* ssid = "";  // Your SSID here.
+const char* pass = "";  // Your wifi password here.
 int trycount;
 const char* ntpServer = "pool.ntp.org";
 struct tm ntp_time;   // Holds the time as retreived from the NTP server.
