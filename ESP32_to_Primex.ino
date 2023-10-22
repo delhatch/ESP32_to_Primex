@@ -26,7 +26,7 @@ int state = 0;
 int alreadyUpdated = 0;
 
 // WiFi & NTP constants
-const char* ssid = "";  // Your SSID here.
+const char* ssid = "junk";  // Your SSID here.
 const char* pass = "";  // Your wifi password here.
 int trycount;
 const char* ntpServer = "pool.ntp.org";
